@@ -1,0 +1,8 @@
+FROM registry.us-east-1.aliyuncs.com/kubernetes-fc/modelscope-vllm:v1
+
+WORKDIR /vllm-workspace
+
+COPY scripts/image/download.py .
+
+CMD python3 -u /vllm-workspace/download.py
+EXPOSE 9000
