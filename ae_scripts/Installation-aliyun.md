@@ -91,7 +91,7 @@ If you are using ECS instances not listed in 2.2, please configure the specifica
 Log in to your master node and run the following commands.
 ```
 [Clone this repo]
-cd hydraserve/scripts/kubernetes
+cd hydraserve-artifact/scripts/kubernetes
 sh install_python.sh    # The kubernetes package version must be consistent with the version of your local kubernetes.
 sh tool-node-shell/setup.sh
 ```
