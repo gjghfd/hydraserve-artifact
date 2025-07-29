@@ -8,8 +8,7 @@ This guide provides instructions to reproduce the main results presented in the 
 Our experiments were carried out using the Aliyun ACK cluster.
 Please refer to the installation sections in [HydraServe Setup Guide](Installation.md) and [ServerlessLLM Setup Guide](../scripts/kubernetes/serverlessllm/README.md).
 
-Due to the time limit, we currently provide reproduction scripts only for the main results in our paper (figure7,9,11,13).
-We will add scripts for other results in the future.
+Due to the budget limit, we can only provision the cluster for a short time slot. Thus, we only reproduce the main results in our paper (figure7,9,11,13).
 
 ## Figure 7 (Cold Start Latency)
 
@@ -38,12 +37,14 @@ After the experiments for all settings have been completed, use `figure7.py` to 
 
 ## Figure 9 (End-to-End Performance)
 
+NOTE: Due to time limits, you can just choose several settings out of all settings to run end-to-end experiment. The settings that you did not run will be replaced with results in our experiments. We suggest you to prioritize experiments under CV=8 and request rate=0.6 to successfully generate Figure 11 and Figure 13 in the paper.
+
 First, stop any existing endpoints by running
 ```
 kubectl delete deployment --all
 ps aux | grep python | grep -v grep | awk '{print $2}' | xargs kill -9
 ```
-For each execution type (`serverless_vllm, serverlessllm, hydraserve, hydraserve_with_cache`), each CV (`2,4,8`), and each request rate (`0.6, 0.7, 0.8`), first start the server by
+For each execution type (`serverless_vllm, serverlessllm, hydraserve, hydraserve_with_cache`), each CV (`8,4,2`), and each request rate (`0.6, 0.7, 0.8`), first start the server by
 ```
 export exec_type=[execution_type]
 export cv=[cv]
@@ -56,12 +57,12 @@ Then, run the end-to-end experiment:
 sh ./end2end.sh $exec_type $cv $req_rate
 ```
 
-After the experiments for all settings have been completed, use `figure9.py` to generate the figure `figs/figure9.pdf`.
+After the experiments for your selected settings have been completed, use `figure9.py` to generate the figure `figs/figure9.pdf`.
 
 ## Figure 11 (Application Analysis)
 
-After obtaining the results of the end-to-end experiment under CV=8 and req_rate=0.6, use `figure11.py` to generate the figure `figs/figure11.pdf`. 
+After obtaining all the results of the end-to-end experiment under CV=8 and req_rate=0.6, use `figure11.py` to generate the figure `figs/figure11.pdf`. 
 
 ## Figure 13 (TPOT and Resource Usage Penalties)
 
-After obtaining the results of the end-to-end experiment under CV=8 and req_rate=0.6, use `figure13.py` to generate the figures `figs/figure13-a.pdf` and `figs/figure13-b.pdf`. 
+After obtaining all the results of the end-to-end experiment under CV=8 and req_rate=0.6, use `figure13.py` to generate the figures `figs/figure13-a.pdf` and `figs/figure13-b.pdf`. 

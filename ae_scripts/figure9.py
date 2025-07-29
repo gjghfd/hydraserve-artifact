@@ -31,27 +31,29 @@ def fig_cv():
     req = [0.6, 0.7, 0.8]
 
     # Original experiment results
-    # naive = [[46.7,  45.7, 43.9], [49.9, 48.6, 44.7], [53.5,  53.3, 48.5]]
-    # serverlessllm = [[ 57.5, 49.8, 45.3], [61.5, 57.7, 47.7], [60.3, 57.7,  54.0]]
-    # ours_nocache = [[81.1,  77.2, 73.8], [84.2, 78.2, 71.8], [82.5, 76.3, 75.2]]
-    # ours = [[83.7, 79.1, 78.3], [88.2,  83.8,  79.3], [88.2, 85.0, 78.5]]
+    naive = [[46.7,  45.7, 43.9], [49.9, 48.6, 44.7], [53.5,  53.3, 48.5]]
+    serverlessllm = [[ 57.5, 49.8, 45.3], [61.5, 57.7, 47.7], [60.3, 57.7,  54.0]]
+    ours_nocache = [[81.1,  77.2, 73.8], [84.2, 78.2, 71.8], [82.5, 76.3, 75.2]]
+    ours = [[83.7, 79.1, 78.3], [88.2,  83.8,  79.3], [88.2, 85.0, 78.5]]
+    orig_data = [naive, serverlessllm, ours_nocache, ours]
 
     analyzed_results = []
-    for exec_type in exec_types:
+    for exec_idx, exec_type in enumerate(exec_types):
         result_exec = []
-        for cv in cvs:
+        for cv_idx, cv in enumerate(cvs):
             results_cv = []
-            for req_rate in req:
+            for req_idx, req_rate in enumerate(req):
                 log_path = f"/root/logs/result_expr_1_${exec_type}_${cv}_${req_rate}.log.res"
                 if not os.path.exists(log_path):
-                    print(f"Error: evaluation of exec_type = {exec_type}, cv = {cv}, req_rate = {req_rate} not completed.")
-                    exit(1)
-                handler = open(log_path, 'r')
-                lines = handler.readlines()
-                for line in lines:
-                    match = re.match(pattern, line)
-                    if match:
-                        attainment = match.group(2)
+                    print(f"Warning: evaluation of exec_type = {exec_type}, cv = {cv}, req_rate = {req_rate} not completed. Use data point from our original experiment.")
+                    attainment = orig_data[exec_idx][cv_idx][req_idx]
+                else:
+                    handler = open(log_path, 'r')
+                    lines = handler.readlines()
+                    for line in lines:
+                        match = re.match(pattern, line)
+                        if match:
+                            attainment = match.group(2)
                 results_cv.append(attainment)
             result_exec.append(results_cv)
         analyzed_results.append(result_exec)
