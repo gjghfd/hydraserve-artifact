@@ -81,6 +81,8 @@ cd scripts/kubernetes/vllm
 python src/init_images.py           # fetch images
 export MODEL_DIR=[PATH_TO_MODEL_DIR]
 export MODELSCOPE_TOKEN=[MODELSCOPE_ACCESS_TOKEN]
+# If you are using a NAS shared by all servers, configure the USE_NAS environment variable to 1
+export USE_NAS=1
 python src/init_models.py           # download models from modelscope
 ```
 

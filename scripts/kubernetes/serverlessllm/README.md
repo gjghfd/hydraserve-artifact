@@ -36,7 +36,8 @@ conda activate sllm
 export SERVER_POD_IP=$(cat head_ip.txt)
 export LLM_SERVER_URL=http://$SERVER_POD_IP:8343/
 python src/init_models.py           # create serverlessllm-specific model weights
-SRC=GPU python ../vllm/src/broadcast_models.py vllm # broadcast model weights to other servers
+# If you are not using NAS, run the following command to broadcast model weights to other servers
+SRC=GPU python ../vllm/src/broadcast_models.py vllm
 ```
 
 # 2. Run ServerlessLLM

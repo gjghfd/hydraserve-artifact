@@ -20,7 +20,9 @@ This is an implementation of the paper: "HydraServe: Minimizing Cold Start Laten
 ```
 
 ### Installation
-Please follow the [Installation Guide](ae_scripts/Installation.md) to install and test HydraServe.
+Due to the limited time available for resource provisioning, we have prepared the environment on Aliyun ACK cluster for AE reviewers. Please refer to HotCRP to obtain the access credentials for the cluster.
+
+To set up environment on your own servers, please follow the [Installation Guide](ae_scripts/Installation.md) to install and test HydraServe.
 
 ## Detailed Instructions
 

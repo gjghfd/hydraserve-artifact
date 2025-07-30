@@ -9,6 +9,7 @@ from ImageInfo import ImageList
 
 nas_path = os.getenv("MODEL_DIR", "/mnt")
 modelscope_token = os.getenv("MODELSCOPE_TOKEN", "")
+use_nas = True if int(os.getenv("USE_NAS", "0")) == 1 else False
 
 if __name__ == '__main__':
     config.load_kube_config()
@@ -29,6 +30,9 @@ if __name__ == '__main__':
     model_list = ModelList
 
     node_list = get_node_list_gpu(core_api) + list(get_node_list_nogpu(core_api).keys())
+
+    if use_nas:
+        node_list = [node_list[0]]
     
     models_to_download = []
     for task, models in model_list.items():

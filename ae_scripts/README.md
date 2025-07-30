@@ -5,9 +5,9 @@ This guide provides instructions to reproduce the main results presented in the 
 
 ## Environment Setup
 
-We provide a prepared environment on Aliyun ACK cluster. Please refer to HotCRP to obtain the access credentials for the cluster.
+We have prepared the environment on Aliyun ACK cluster. Please refer to HotCRP to obtain the access credentials for the cluster.
 
-To setup environment on your own servers, please refer to the installation sections in [HydraServe Setup Guide](Installation.md) and [ServerlessLLM Setup Guide](../scripts/kubernetes/serverlessllm/README.md).
+To set up environment on your own servers, please refer to the installation sections in [HydraServe Setup Guide](Installation.md) and [ServerlessLLM Setup Guide](../scripts/kubernetes/serverlessllm/README.md).
 
 Due to the budget limit, we can only provision the cluster for a short time slot. Thus, we only reproduce the main results in our paper (figure7,9,11,13).
 

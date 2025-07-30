@@ -95,3 +95,7 @@ cd hydraserve-artifact/scripts/kubernetes
 sh install_python.sh    # The kubernetes package version must be consistent with the version of your local kubernetes.
 sh tool-node-shell/setup.sh
 ```
+
+### 6. [Optional] Mount NAS to all instances
+
+You can mount a shared NAS to the `/mnt` path of all instances following instructions in [Mount NAS to multiple instances](https://help.aliyun.com/zh/nas/user-guide/mount-a-nas-file-system-on-multiple-ecs-instances-at-the-same-time?spm=5176.nas_overview.help.dexternal.51cf217dfzlsrW)
