@@ -35,22 +35,21 @@ if __name__ == '__main__':
     # Initialize storage server
     print("Start to initialize images...")
 
-    node_list_nogpu = get_node_list_nogpu(core_api)
-    node_list_gpu = get_node_list_with_resource(core_api)
+    node_list = get_node_list_gpu(core_api) + list(get_node_list_nogpu(core_api).keys())
 
     servers = []
     workers = []
     
     image = "registry.us-east-1.aliyuncs.com/kubernetes-fc/sllm-serve:v1"
     index = 0
-    for node, net in node_list_nogpu.items():
+    for node in node_list:
         name = "server-" + str(index)
         create_deployment(apps_api, name, image, {}, node, nas_path)
         servers.append(name)
         index += 1
     
     index = 0
-    for node, resource in node_list_gpu.items():
+    for node in node_list:
         name = "worker-" + str(index)
         create_deployment(apps_api, name, "registry.us-east-1.aliyuncs.com/kubernetes-fc/sllm-serve-worker:v1", {}, node, nas_path)
         workers.append(name)

@@ -5,10 +5,26 @@ This guide provides instructions to reproduce the main results presented in the 
 
 ## Environment Setup
 
-Our experiments were carried out using the Aliyun ACK cluster.
-Please refer to the installation sections in [HydraServe Setup Guide](Installation.md) and [ServerlessLLM Setup Guide](../scripts/kubernetes/serverlessllm/README.md).
+We provide a prepared environment on Aliyun ACK cluster. Please refer to HotCRP to obtain the access credentials for the cluster.
+
+To setup environment on your own servers, please refer to the installation sections in [HydraServe Setup Guide](Installation.md) and [ServerlessLLM Setup Guide](../scripts/kubernetes/serverlessllm/README.md).
 
 Due to the budget limit, we can only provision the cluster for a short time slot. Thus, we only reproduce the main results in our paper (figure7,9,11,13).
+
+### GPU Isolation Configuration
+HydraServe and ServerlessLLM require different GPU isolation strategies. Before switching from one system to the other for experiments, please make sure to change the GPU isolation strategy accordingly (Serverless vLLM uses the same strategy as HydraServe).
+To configure the GPU isolation strategy, you should change the labels of all GPU servers:
+
+1. For HydraServe, run
+```
+cd hydraserve-artifact/scripts/kubernetes
+SHARE=1 python label_nodes.py
+```
+1. For ServerlessLLM, run
+```
+cd hydraserve-artifact/scripts/kubernetes
+SHARE=0 python label_nodes.py
+```
 
 ## Figure 7 (Cold Start Latency)
 
@@ -33,7 +49,7 @@ Then, run the cold start experiment:
 sh ./coldstart.sh $exec_type $model_set $backend
 ```
 
-After the experiments for all settings have been completed, use `figure7.py` to generate the figure `figs/figure7.pdf`.
+After the experiments for all settings have completed, use `figure7.py` to generate the figure `figs/figure7.pdf`.
 
 ## Figure 9 (End-to-End Performance)
 
@@ -56,6 +72,7 @@ Then, run the end-to-end experiment:
 ```
 sh ./end2end.sh $exec_type $cv $req_rate
 ```
+The experiment will elapse an hour.
 
 After the experiments for your selected settings have been completed, use `figure9.py` to generate the figure `figs/figure9.pdf`.
 

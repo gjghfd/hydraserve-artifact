@@ -281,12 +281,15 @@ def get_node_list_nogpu(core_api) -> Dict[str, int]:
     labels = {}
     for node in node_list.items:
         node_labels = node.metadata.labels
+        node_type = node_labels["node.kubernetes.io/instance-type"]
         if "gpushare" not in node_labels and "ack.node.gpu.schedule" not in node_labels:
-            node_type = node_labels["node.kubernetes.io/instance-type"]
             if node_type not in AliyunECSInstanceInfo:
                 net = 0
             else:
                 net = AliyunECSInstanceInfo[node_type]
+            labels[node_labels["kubernetes.io/hostname"]] = net
+        elif used_machines and node_type not in used_machines and node_type in AliyunECSInstanceInfo:
+            net = AliyunECSInstanceInfo[node_type][2]
             labels[node_labels["kubernetes.io/hostname"]] = net
     return labels
 

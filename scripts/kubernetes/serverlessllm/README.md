@@ -1,6 +1,7 @@
 # 1. Install ServerlessLLM with Aliyun ACK
 
-Please make sure you have installed HydraServe by following [HydraServe Setup Guide](../../../README.md).
+This guide decribes how to install ServerlessLLM on Aliyun ACK cluster.
+Please make sure you have installed HydraServe on an Aliyun ACK cluster by following [HydraServe Setup Guide](../../../README.md).
 
 ### 1.1 Build Docker Images
 

@@ -28,7 +28,7 @@ log_path="/root/logs/expr_${expr}_${exec_type}_${model_set}_${backend}_${cv}_${r
 vllm() {
     cd $cur_dir/../scripts/kubernetes/vllm
     SLOW_EXPR=1 python src/start_storage_server.py
-    SLOW_EXPR=1 USED_MACHINES=$used_machine_types python src/main.py > $log_path 2>&1 &
+    SLOW_EXPR=1 python src/main.py > $log_path 2>&1 &
 }
 
 serverlessllm() {
@@ -48,20 +48,21 @@ serverlessllm() {
 
 hydraserve_with_single_worker() {
     python src/start_storage_server.py
-    MAX_PP_SIZE=1 USED_MACHINES=$used_machine_types python src/main.py > $log_path 2>&1 &
+    MAX_PP_SIZE=1 python src/main.py > $log_path 2>&1 &
 }
 
 hydraserve() {
     python src/start_storage_server.py
-    USED_MACHINES=$used_machine_types python src/main.py > $log_path 2>&1 &
+    python src/main.py > $log_path 2>&1 &
 }
 
 hydraserve_with_cache() {
     USE_CACHE=1 python src/start_storage_server.py
-    USED_MACHINES=$used_machine_types USE_CACHE=1 python src/main.py > $log_path 2>&1 &
+    USE_CACHE=1 python src/main.py > $log_path 2>&1 &
 }
 
 export MODEL_SET=$model_set
+export USED_MACHINES=$used_machine_types
 case "$exec_type" in
     "serverless_vllm")
         vllm

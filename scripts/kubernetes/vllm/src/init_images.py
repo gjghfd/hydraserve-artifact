@@ -36,8 +36,7 @@ if __name__ == '__main__':
     # Initialize storage server
     print("Start to initialize images...")
 
-    node_list_nogpu = get_node_list_nogpu(core_api)
-    node_list_gpu = get_node_list_with_resource(core_api)
+    node_list = get_node_list_gpu(core_api) + list(get_node_list_nogpu(core_api).keys())
 
     remote_servers = []
     workers = []
@@ -45,21 +44,21 @@ if __name__ == '__main__':
     image = ImageList["storage-remote"]
     index = 0
     env = {"MODELSCOPE_CACHE": os.path.join(nas_path, "model-cache")}
-    for node, net in node_list_nogpu.items():
+    for node in node_list:
         name = "storage-server-remote-" + str(index)
         create_deployment(apps_api, name, image, env, node, nas_path)
         remote_servers.append(name)
         index += 1
     
     index = 0
-    for node, resource in node_list_gpu.items():
+    for node in node_list:
         name = "worker-" + str(index)
         create_deployment(apps_api, name, ImageList["vllm"], {}, node, nas_path)
         workers.append(name)
         index += 1
     
     index = 0
-    for node, resource in node_list_gpu.items():
+    for node in node_list:
         name = "local-server-" + str(index)
         create_deployment(apps_api, name, ImageList["storage-local"], {}, node, nas_path)
         local_servers.append(name)
