@@ -19,7 +19,7 @@ Create a node pool with zero initial nodes.
 - Container Runtime: containerd
 - Configure Managed Node Pool: Disable
 - Volumes
-  - System Disk: 400 GiB
+  - System Disk: 200 GiB
 - Instances
   - Expected Nodes: 0
 
@@ -36,7 +36,7 @@ Create ECS instances by clicking **Create Instance** on the [ECS Console](https:
 - Enable a public IP address for access
 - Use the same VPC and security group as your ACK cluster
 - All instances should be within the same region
-- Allocate at least 400GB ESSD to store images
+- Allocate at least 200GB ESSD to store images
 
 ECS types used in our latency measurement experiments (testbed (i)).
 
@@ -59,6 +59,7 @@ ECS types used in our end-to-end experiments (testbed (ii)).
 1. In the Cluster Management page, click Nodes -> Nodes Pools -> Add Existing Node for default nodepool.
 2. Select the created instances.
 3. Check **Store Container and Image Data on a Data Disk**.
+4. Waiting for instances joining the cluster.
 
 #### 2.3 Configure Kubernetes accessibility
 
@@ -98,4 +99,4 @@ sh tool-node-shell/setup.sh
 
 ### 6. [Optional] Mount NAS to all instances
 
-You can mount a shared NAS to the `/mnt` path of all instances following instructions in [Mount NAS to multiple instances](https://help.aliyun.com/zh/nas/user-guide/mount-a-nas-file-system-on-multiple-ecs-instances-at-the-same-time?spm=5176.nas_overview.help.dexternal.51cf217dfzlsrW)
+You can mount a shared NAS to the `/mnt` path of all instances following instructions in [Mount NAS to multiple instances](https://help.aliyun.com/zh/nas/user-guide/mount-a-nas-file-system-on-multiple-ecs-instances-at-the-same-time?spm=5176.nas_overview.help.dexternal.51cf217dfzlsrW).
