@@ -27,4 +27,4 @@ huggingface_models = [
 
 os.system("mkdir -p /mnt/sllm/facebook")
 for model_name in huggingface_models:
-    os.system(f"cd /mnt/sllm/facebook && git clone https://huggingface.co/{model_name}")
+    os.system(f"cd /mnt/sllm/facebook && git clone https://huggingface.co/{model_name} && cd {model_name[9:]} && git-lfs pull")

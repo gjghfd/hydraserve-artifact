@@ -27,17 +27,17 @@ kubectl label [node_name] ack.node.gpu.schedule=default --overwrite
 ### 1.3 Fetch Images and Download Models
 
 Run the following commands to fetch the required Docker images and download models.
+You should have a NAS that mounted to '/mnt' of all servers.
 ```
 python src/init_images.py           # init images
-EXPR_1_1=1 python src/init_servers.py
+yum install -y git-lfs
+export ACCESS_TOKEN=[MODELSCOPE_ACCESS_TOKEN]
+python src/download_models.py       # download models
+python src/init_servers.py          # start ServerlessLLM endpoint
 # In another terminal
-kubectl node-shell $(cat worker_name.txt) -- sh -c "ln -s /mnt/model-cache /mnt/sllm"   # link to models downloaded by HydraServe
 conda activate sllm
-export SERVER_POD_IP=$(cat head_ip.txt)
-export LLM_SERVER_URL=http://$SERVER_POD_IP:8343/
+export LLM_SERVER_URL=http://$(cat head_ip.txt):8343/
 python src/init_models.py           # create serverlessllm-specific model weights
-# If you are not using NAS, run the following command to broadcast model weights to other servers
-SRC=GPU python ../vllm/src/broadcast_models.py vllm
 ```
 
 # 2. Run ServerlessLLM
@@ -76,8 +76,7 @@ python ../vllm/src/request_generator.py [PATH_TO_WORKLOAD] [REQ_PER_SECOND] mode
 
 # 2. deploy models
 conda activate sllm
-export SERVER_POD_IP=$(cat head_ip.txt)
-export LLM_SERVER_URL=http://$SERVER_POD_IP:8343/
+export LLM_SERVER_URL=http://$(cat head_ip.txt):8343/
 # Deploy all models
 python deploy_models.py models.txt  #It takes up to 5 minutes
 
