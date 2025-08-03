@@ -26,18 +26,18 @@ ModelSet = {}
 
 ModelSet[0] = {
     "test": {
-        "modelscope/Llama-2-7b-chat-ms": (13, 9000, 200, 1000000, 1),
-        "LLM-Research/Meta-Llama-3-8B-Instruct": (15, 9000, 200, 1000000, 1),
         "facebook/opt-2.7b": (7, 9000, 200, 1000000, 1),
         "facebook/opt-6.7b": (13, 9000, 200, 1000000, 1),
         "AI-ModelScope/falcon-7b": (13, 9000, 200, 1000000, 1),
+        "modelscope/Llama-2-7b-chat-ms": (13, 9000, 200, 1000000, 1),
+        "LLM-Research/Meta-Llama-3-8B-Instruct": (15, 9000, 200, 1000000, 1),
     }
 }
 
 ModelSet[1] = {
     "test": {
-        "modelscope/Llama-2-13b-chat-ms": (26, 13000, 200, 1000000, 1),
         "facebook/opt-13b": (26, 13000, 200, 1000000, 1),
+        "modelscope/Llama-2-13b-chat-ms": (26, 13000, 200, 1000000, 1),
     }
 }
 

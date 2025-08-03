@@ -28,12 +28,6 @@ SHARE=0 python label_nodes.py
 
 ## Figure 7 (Cold Start Latency)
 
-First, stop any existing endpoints by running
-```
-kubectl delete deployment --all
-ps aux | grep python | grep -v grep | awk '{print $2}' | xargs kill -9
-```
-
 As the remote storage cannot concurrently supply too many models, we have split the models into two sets and will run the experiments twice.
 
 For each execution type (`serverless_vllm, serverlessllm, serverlessllm_with_cached_model, hydraserve_with_single_worker, hydraserve`), each model set (`0, 1`), and each backend (`a10, v100`), first start the server by
@@ -55,11 +49,6 @@ After the experiments for all settings have completed, use `figure7.py` to gener
 
 NOTE: Due to time limits, you can just choose several settings out of all settings to run end-to-end experiment. The settings that you did not run will be replaced with results in our experiments. We suggest you to prioritize experiments under CV=8 and request rate=0.6 to successfully generate Figure 11 and Figure 13 in the paper.
 
-First, stop any existing endpoints by running
-```
-kubectl delete deployment --all
-ps aux | grep python | grep -v grep | awk '{print $2}' | xargs kill -9
-```
 For each execution type (`serverless_vllm, serverlessllm, hydraserve, hydraserve_with_cache`), each CV (`8,4,2`), and each request rate (`0.6, 0.7, 0.8`), first start the server by
 ```
 export exec_type=[execution_type]

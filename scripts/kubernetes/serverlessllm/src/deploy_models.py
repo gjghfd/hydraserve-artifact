@@ -6,19 +6,29 @@ from ModelInfo import ModelList
 if __name__ == '__main__':
     expr_1_1 = True if int(os.getenv("EXPR_1_1", "0")) == 1 else False
     if expr_1_1:
-        expr_model_list = [
-            "facebook/opt-2.7b",
-            "facebook/opt-6.7b",
-            "facebook/opt-13b",
-            "modelscope/Llama-2-7b-chat-ms",
-            "modelscope/Llama-2-13b-chat-ms",
-            "LLM-Research/Meta-Llama-3-8B-Instruct",
-            "AI-ModelScope/falcon-7b",
-        ]
+        model_set = int(os.getenv("MODEL_SET", "2"))
+        if model_set == 0:
+            expr_model_list = [
+                "facebook/opt-2.7b",
+                "facebook/opt-6.7b",
+                "modelscope/Llama-2-7b-chat-ms",
+                "LLM-Research/Meta-Llama-3-8B-Instruct",
+                "AI-ModelScope/falcon-7b",
+            ]
+        else:
+            expr_model_list = [
+                "facebook/opt-13b",
+                "modelscope/Llama-2-13b-chat-ms",
+            ]
         for model in expr_model_list:
             os.system(f"sllm-cli deploy --model {model}")
-        # Use modelscope/Llama-2-13b-chat-ms/0 to clear cache
-        os.system(f"sllm-cli deploy --model modelscope/Llama-2-13b-chat-ms/0")
+        # This model is used to clear cache
+        backend = os.getenv("BACKEND", "hybrid")
+        if backend == "a10":
+            model_name = "modelscope/Llama-2-7b-chat-ms"
+        else:
+            model_name = "modelscope/Llama-2-13b-chat-ms"
+        os.system(f"sllm-cli deploy --model {model_name}")
         print("All models deployed!")
         exit(0)
     

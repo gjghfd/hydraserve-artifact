@@ -6,7 +6,6 @@ cv=$5
 req_rate=$6
 
 cur_dir=$(dirname "$0")
-cd $cur_dir/../scripts/kubernetes/vllm
 
 if [ "$expr" == "0" ]; then
     if [ "$backend" == "a10" ]; then
@@ -25,10 +24,18 @@ fi
 mkdir -p /root/logs
 log_path="/root/logs/expr_${expr}_${exec_type}_${model_set}_${backend}_${cv}_${req_rate}_main.log"
 
+echo "Delete existing endpoints..."
+kubectl delete deployment --all
+ps aux | grep "python src/" | grep -v grep | awk '{print $2}' | xargs kill -9
+sleep 3
+echo "Existing endpoints deleted."
+
 vllm() {
     cd $cur_dir/../scripts/kubernetes/vllm
     SLOW_EXPR=1 python src/start_storage_server.py
     SLOW_EXPR=1 python src/main.py > $log_path 2>&1 &
+    echo "Waiting for endpoint startup..."
+    sleep 10
 }
 
 serverlessllm() {
@@ -38,27 +45,38 @@ serverlessllm() {
         # Get model list
         python src/request_generator.py trace/trace_${cv}.pkl $req_rate model_${cv}_${req_rate}.txt
     fi
-    cd $cur_dir/../scripts/kubernetes/serverlesslllm
-    python src/init_servers.py
-    pod_ip=$(cat head_ip.txt)
-    export SERVER_POD_IP=$pod_ip
-    export LLM_SERVER_URL=http://${SERVER_POD_IP}:8343/
-    python src/deploy_models.py model_${cv}_${req_rate}.txt
+    cd $cur_dir/../scripts/kubernetes/serverlessllm
+    BACKEND=$backend python src/init_servers.py > $log_path 2>&1 &
+    echo "Waiting for endpoint startup..."
+    tail -f $log_path | grep -q -- "Uvicorn running on "
+    source ~/anaconda3/etc/profile.d/conda.sh
+    conda activate sllm
+    export LLM_SERVER_URL=http://$(cat head_ip.txt):8343/
+    MODEL_SET=$model_set BACKEND=$backend python src/deploy_models.py model_${cv}_${req_rate}.txt
 }
 
 hydraserve_with_single_worker() {
+    cd $cur_dir/../scripts/kubernetes/vllm
     python src/start_storage_server.py
     MAX_PP_SIZE=1 python src/main.py > $log_path 2>&1 &
+    echo "Waiting for endpoint startup..."
+    sleep 10
 }
 
 hydraserve() {
+    cd $cur_dir/../scripts/kubernetes/vllm
     python src/start_storage_server.py
     python src/main.py > $log_path 2>&1 &
+    echo "Waiting for endpoint startup..."
+    sleep 10
 }
 
 hydraserve_with_cache() {
+    cd $cur_dir/../scripts/kubernetes/vllm
     USE_CACHE=1 python src/start_storage_server.py
     USE_CACHE=1 python src/main.py > $log_path 2>&1 &
+    echo "Waiting for endpoint startup..."
+    sleep 10
 }
 
 export MODEL_SET=$model_set
@@ -89,6 +107,3 @@ case "$exec_type" in
 esac
 
 echo "Endpoint started. Log printed to ${log_path}."
-echo "Waiting for Endpoint startup..."
-sleep 10
-echo "Server Started."

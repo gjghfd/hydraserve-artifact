@@ -13,6 +13,7 @@ vllm() {
 }
 
 serverlessllm() {
+    export LLM_SERVER_URL=http://$(cat ../serverlessllm/head_ip.txt):8343/
     SERVERLESS_LLM=1 python src/request_generator.py trace/trace_${cv}.pkl $req_rate > $log_path 2>&1 &
 }
 

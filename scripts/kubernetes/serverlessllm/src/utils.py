@@ -71,18 +71,12 @@ async def post_ayncio_request(url: str, port: int, payload):
     return ret
 
 async def post_ayncio_request_util_succ(url: str, port: int, payload):
-    counter = 0
     while True:
         try:
             ret = await post_ayncio_request(url, port, payload)
             return ret
         except Exception as e:
             await asyncio.sleep(0.05)
-            counter = counter + 1
-            if counter == 10000:
-                print(f"Error: failed to post asyncio request, url = {url}:{port}, payload = {payload}")
-                print(f"Exception: %s", e)
-                break
 
 '''
 Note:

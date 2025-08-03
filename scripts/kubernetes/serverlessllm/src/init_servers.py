@@ -7,7 +7,7 @@ import subprocess
 from typing import List
 from kubernetes import client, config
 
-from utils import get_node_list_nogpu, get_node_list_gpu, get_node_list_with_resource, create_deployment, delete_all_deployments, post_request_util_succ
+from utils import get_node_list_nogpu, get_node_list_gpu, get_node_list_with_resource, create_deployment, delete_all_deployments, post_ayncio_request_util_succ
 from ModelInfo import ModelList
 
 nas_path = "/mnt"
@@ -111,7 +111,11 @@ if __name__ == '__main__':
                "BATCH_SIZE": "8",
                }
         if expr_1_1:
-            env["MEM_POOL_SIZE"] = "26"
+            backend = os.getenv("BACKEND", "hybrid")
+            if backend == "a10":
+                env["MEM_POOL_SIZE"] = "16"
+            else:
+                env["MEM_POOL_SIZE"] = "27"
         # Allocate remote server
         remote_server_rank = -1
         for rank in range(num_servers):
@@ -227,6 +231,14 @@ if __name__ == '__main__':
     # Copy hardware config
     cmd = "kubectl cp /root/hardware_config.json " + pod_name + ":/app/hardware_config.json"
     os.system(cmd)
+
+    # Wait for remote storage startup
+    print(f"Waiting for remote storage startup...")
+    req = -1
+    req_bytes = req.to_bytes(length=4, byteorder='little', signed=True)
+    for ip in server_ip_list:
+        # post request util success
+        asyncio.run(post_ayncio_request_util_succ(ip, 8888, req_bytes))
 
     # Run server
     cmd = "kubectl exec " + pod_name + " -- sh -c \"/opt/conda/bin/sllm-serve start --hardware-config /app/hardware_config.json\""

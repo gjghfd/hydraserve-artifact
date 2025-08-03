@@ -343,13 +343,21 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         if serverless_llm == 1:
             thread_idx_bytes = self.request.recv(4)
+            thread_idx = int.from_bytes(thread_idx_bytes, byteorder='little', signed=True)
+            if thread_idx == -1:
+                # initialization query
+                self.request.sendall(bytes('initialization finished', 'utf-8'))
+
+                # sleep 1 second to wait for peer read data
+                time.sleep(1)
+                self.request.close()
+                return
             num_thread_bytes = self.request.recv(4)
+            num_thread = int.from_bytes(num_thread_bytes, byteorder='little', signed=True)
             model_path = self.request.recv(100).decode('utf-8')
             # Check whether model_path ends with /0, /1, etc. If true, get rid of them
             pattern = re.compile(r'/\d+')
             model_path = re.sub(pattern, '', model_path)
-            thread_idx = int.from_bytes(thread_idx_bytes, byteorder='little', signed=True)
-            num_thread = int.from_bytes(num_thread_bytes, byteorder='little', signed=True)
             print(f"Received request for model {model_path} [{thread_idx}-{num_thread}]")
 
             if model_path not in models:

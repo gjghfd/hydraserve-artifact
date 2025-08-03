@@ -178,7 +178,8 @@ async def raw_load_generator():
                     messages=prompt,
                     max_tokens=10,
                 )
-                first_token_time = chat.created
+                generation_time = time.time()
+                first_token_time = generation_time - chat.created - stime
                 if chat.usage is not None:
                     num_generated_tokens = chat.usage.completion_tokens
                 else:
@@ -197,7 +198,7 @@ async def raw_load_generator():
                 num_generated_tokens = int(resp_str[pos+1:])
                 if not first_token_returned:
                     print(f"Error: request for model {model_id} has no return")
-            generation_time = time.time()
+                generation_time = time.time()
         except Exception as e:
                 exc_info = sys.exc_info()
                 print(f"Request gets exception: {e}")
@@ -213,20 +214,22 @@ async def raw_load_generator():
     ttft_list = []
     tpot_list = []
 
-    num_profile_points = 5
+    num_profile_points = 3
     prompt = [{'role': 'user', 'content': 'Write a story in 500 words'}]
 
     use_cache = False
     if serverless_llm == 1:
+        backend = os.getenv("BACKEND", "hybrid")
+        if backend == "a10":
+            sllm_cache_model = "modelscope/Llama-2-7b-chat-ms"
+        else:
+            sllm_cache_model = "modelscope/Llama-2-13b-chat-ms"
+        sllm_cache_payload = {'id': 0, 'model': sllm_cache_model, 'prompt': str(prompt), 'stream': 'True'}
         print("Init instances.")
         # init instance for each model first
         for model_id in expr_model_list:
             payload = {'id': 0, 'model': model_id, 'prompt': str(prompt), 'stream': 'True'}
             ttft, gt, num_tokens = await post_request(payload, "http://0.0.0.0:9090")
-        print("Clear cache.")
-        # clear cache
-        payload = {'id': 0, 'model': f"modelscope/Llama-2-13b-chat-ms/0", 'prompt': str(prompt), 'stream': 'True'}
-        ttft, gt, num_tokens = await post_request(payload, "http://0.0.0.0:9090")
         print("Initialization Complete!")
         if int(os.getenv("USE_CACHE", "0")) == 1:
             use_cache = True
@@ -244,11 +247,23 @@ async def raw_load_generator():
         mn_tpot = 10000
         mx_ttft = 0
         mx_tpot = 0
+        if use_cache:
+            # post a request to generate cache
+            ttft, gt, num_tokens = await post_request(payload, "http://0.0.0.0:9090")
+            time.sleep(35)
         for i in range(num_profile_points):
-            print(f"Start measure model {model_id} [{i}]")
-            if use_cache:
-                # post a request to generate cache
-                ttft, gt, num_tokens = await post_request(payload, "http://0.0.0.0:9090")
+            print(f"Start measure model {model_id} [{i}]", flush=True)
+            if serverless_llm == 1 and not use_cache:
+                # clear cache
+                if model_id == sllm_cache_payload['model']:
+                    if backend == "a10":
+                        sllm_cache_model_ = "LLM-Research/Meta-Llama-3-8B-Instruct"
+                    else:
+                        sllm_cache_model_ = "facebook/opt-13b"
+                    sllm_cache_payload_ = {'id': 0, 'model': sllm_cache_model_, 'prompt': str(prompt), 'stream': 'True'}
+                    ttft, gt, num_tokens = await post_request(sllm_cache_payload_, "http://0.0.0.0:9090")
+                else:
+                    ttft, gt, num_tokens = await post_request(sllm_cache_payload, "http://0.0.0.0:9090")
                 time.sleep(35)
             ttft, gt, num_tokens = await post_request(payload, "http://0.0.0.0:9090")
             tpot = gt / (num_tokens - 1)
@@ -259,16 +274,16 @@ async def raw_load_generator():
             mx_tpot = max(mx_tpot, tpot)
             sum_ttft += ttft
             sum_tpot += tpot
-            print(f"End measure model {model_id} [{i}], ttft = {ttft} s, tpot = {tpot} ms")
+            print(f"End measure model {model_id} [{i}], ttft = {ttft} s, tpot = {tpot} ms", flush=True)
             time.sleep(35)
-        ttft = (sum_ttft - mn_ttft - mx_ttft) / (num_profile_points - 2)
-        tpot = (sum_tpot - mn_tpot - mx_tpot) / (num_profile_points - 2)
-        print(f"Model {model_id}: TTFT = {ttft} s, TPOT = {tpot} ms")
+        ttft = (sum_ttft - mx_ttft) / (num_profile_points - 1)
+        tpot = (sum_tpot - mx_tpot) / (num_profile_points - 1)
+        print(f"Model {model_id}: TTFT = {ttft} s, TPOT = {tpot} ms", flush=True)
         ttft_list.append(ttft)
         tpot_list.append(tpot)
     
     for index, model_id in enumerate(expr_model_list):
-        print(f"Model {model_id}: TTFT = {ttft_list[index]} s, TPOT = {tpot_list[index]} ms")
+        print(f"Model {model_id}: TTFT = {ttft_list[index]} s, TPOT = {tpot_list[index]} ms", flush=True)
 
 if __name__ == '__main__':
     # Warning: for expr1.1, remote serve may not be able to store so many models at a time, so you need to run two rounds to test all models.

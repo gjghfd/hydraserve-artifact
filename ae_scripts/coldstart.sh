@@ -12,11 +12,13 @@ vllm() {
 }
 
 serverlessllm() {
-    SERVERLESS_LLM=1 USE_CACHE=0 python src/request_generator.py > $log_path 2>&1 &
+    export LLM_SERVER_URL=http://$(cat ../serverlessllm/head_ip.txt):8343/
+    BACKEND=$backend SERVERLESS_LLM=1 USE_CACHE=0 python src/request_generator.py > $log_path 2>&1 &
 }
 
 serverlessllm_with_cached_model() {
-    SERVERLESS_LLM=1 USE_CACHE=1 python src/request_generator.py > $log_path 2>&1 &
+    export LLM_SERVER_URL=http://$(cat ../serverlessllm/head_ip.txt):8343/
+    BACKEND=$backend SERVERLESS_LLM=1 USE_CACHE=1 python src/request_generator.py > $log_path 2>&1 &
 }
 
 hydraserve() {
