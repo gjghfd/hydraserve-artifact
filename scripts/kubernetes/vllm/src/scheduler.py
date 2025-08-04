@@ -276,9 +276,23 @@ class Scheduler:
             self.cache_manager = CacheManager(self.resource_manager.storage_server_ip)
 
         self.slow_expr = int(os.getenv("SLOW_EXPR", "0"))
+        self.use_static_parallelism = False
+        self.parallelism_size = -1
 
         from algs import naive, pipeline_parallel_static, pipeline_parallel_static_scale_down, ours
-        self.alg = ours if not self.slow_expr else naive
+
+        if self.slow_expr:
+            self.alg = naive
+        else:
+            max_pp_size = int(os.getenv("MAX_PP_SIZE", "-1"))
+            if max_pp_size != -1:
+                # max_pp_size is configured in experiment 1.1
+                self.use_static_parallelism = True
+                self.parallelism_size = max_pp_size
+                self.alg = pipeline_parallel_static
+            else:
+                self.alg = ours
+        print(f"Use algorithm = {self.alg}")
         self.num_instance_per_coldstart = 4
         self.tasks = set()
     
@@ -533,7 +547,10 @@ class Scheduler:
             rgpus = self.resource_manager.get_rgpus()
             rgpu = [max(rgpu) for rgpu in rgpus]
             rnets = self.resource_manager.get_rnets(start_time)
-            allocated_resource = self.alg(rgpu, rnets, model.model_stats, required_pp_size, max_waiting_time)
+            if self.use_static_parallelism:
+                allocated_resource = self.alg(rgpu, rnets, model.model_stats, required_pp_size, max_waiting_time, self.parallelism_size)
+            else:
+                allocated_resource = self.alg(rgpu, rnets, model.model_stats, required_pp_size, max_waiting_time)
             if allocated_resource.num_nodes == 0:
                 return None
             print(f"Current GPU Resouces: {rgpus}")

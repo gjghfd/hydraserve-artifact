@@ -35,6 +35,7 @@ if __name__ == '__main__':
     # Initialize storage server
     print("Start to initialize images...")
 
+    node_list_gpu = get_node_list_gpu(core_api)
     node_list = get_node_list_gpu(core_api) + list(get_node_list_nogpu(core_api).keys())
 
     servers = []
@@ -49,7 +50,7 @@ if __name__ == '__main__':
         index += 1
     
     index = 0
-    for node in node_list:
+    for node in node_list_gpu:
         name = "worker-" + str(index)
         create_deployment(apps_api, name, "registry.us-east-1.aliyuncs.com/kubernetes-fc/sllm-serve-worker:v1", {}, node, nas_path)
         workers.append(name)

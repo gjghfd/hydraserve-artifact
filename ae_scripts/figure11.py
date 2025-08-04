@@ -49,7 +49,7 @@ def fig_app():
             match = re.match(pattern, line)
             if match:
                 task_type = match.group(1)
-                attainment = match.group(4)
+                attainment = float(match.group(4))
                 mapping[task_type] = attainment
         for app_name in app_real:
             result_app.append(mapping[app_name])

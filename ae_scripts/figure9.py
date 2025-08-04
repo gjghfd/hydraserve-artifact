@@ -53,7 +53,7 @@ def fig_cv():
                     for line in lines:
                         match = re.match(pattern, line)
                         if match:
-                            attainment = match.group(2)
+                            attainment = float(match.group(2))
                 results_cv.append(attainment)
             result_exec.append(results_cv)
         analyzed_results.append(result_exec)

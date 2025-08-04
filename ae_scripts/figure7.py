@@ -46,7 +46,7 @@ for exec_type in exec_types:
                     match = re.match(pattern, line)
                     if match:
                         model = match.group(1)
-                        ttft = match.group(2)
+                        ttft = float(match.group(2))
                         result[model] = ttft
         results[(exec_type, backend)] = result
 
@@ -77,16 +77,18 @@ def fig_ttft():
     # all = [naive, serverlessllm, serverlessllm_cache, pp1, pp4]
 
     all = [[] for _ in range(5)]
+    backend = 'v100'
     for idx, exec_type in enumerate(exec_types):
-        if (exec_type, "v100") not in results:
+        if (exec_type, backend) not in results:
             print(f"Error: evaluation of exec_type = {exec_type}, backend = {backend} not completed.")
             exit(1)
-        result = results[(exec_type, "v100")]
+        result = results[(exec_type, backend)]
         for model in models:
-            if model not in result:
-                print(f"Error: evaluation of exec_type = {exec_type}, backend = {backend}, model = {model} not completed.")
+            model_path = model_to_path[model]
+            if model_path not in result:
+                print(f"Error: evaluation of exec_type = {exec_type}, backend = {backend}, model = {model_path} not completed.")
                 exit(1)
-            all[idx].append(result[model])
+            all[idx].append(result[model_path])
 
     for i in range(len(all)):
         for j in range(len(all[i])):
@@ -150,16 +152,18 @@ def fig_ttft():
     # all = [naive, serverlessllm, serverlessllm_cache, pp1, pp4]
 
     all = [[] for _ in range(5)]
+    backend = 'a10'
     for idx, exec_type in enumerate(exec_types):
-        if (exec_type, "a10") not in results:
+        if (exec_type, backend) not in results:
             print(f"Error: evaluation of exec_type = {exec_type}, backend = {backend} not completed.")
             exit(1)
-        result = results[(exec_type, "a10")]
+        result = results[(exec_type, backend)]
         for model in models:
-            if model not in result:
-                print(f"Error: evaluation of exec_type = {exec_type}, backend = {backend}, model = {model} not completed.")
+            model_path = model_to_path[model]
+            if model_path not in result:
+                print(f"Error: evaluation of exec_type = {exec_type}, backend = {backend}, model = {model_path} not completed.")
                 exit(1)
-            all[idx].append(result[model])
+            all[idx].append(result[model_path])
 
     for i in range(len(all)):
         for j in range(len(all[i])):

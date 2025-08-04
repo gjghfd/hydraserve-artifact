@@ -36,6 +36,10 @@ pipeline_parallel_static: use a fixed pp_size and perform load balance (try to d
 def pipeline_parallel_static(rgpus: List[int], rnets: List[float], stats: ModelStats, required_pp_size: int, max_waiting_time: int = 0, pp_size: int = 2) -> AllocatedResource:
     model_size = stats.model_size
 
+    if pp_size >= 2 and model_size <= 10:
+        # For small models, use pp_size=1
+        pp_size = 1
+
     required_size = math.ceil((model_size + KVCacheRequiredSize) / pp_size)
     num_nodes = len(rgpus)
 

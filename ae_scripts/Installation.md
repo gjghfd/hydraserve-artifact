@@ -84,6 +84,7 @@ export MODELSCOPE_TOKEN=[MODELSCOPE_ACCESS_TOKEN]
 # If you are using a NAS shared by all servers, configure the USE_NAS environment variable to 1
 export USE_NAS=1
 python src/init_models.py           # download models from modelscope
+python src/init_shm.py              # init shared memory of gpu nodes
 ```
 
 To download all models required in our cold-start latency experiment (Section 8.2 in the paper), run
@@ -106,9 +107,7 @@ cd scripts/kubernetes/vllm
 # This step enables local memory cache and is optional.
 export USE_CACHE=1
 export MODEL_DIR=[PATH_TO_MODEL_DIR]
-export LOG_PATH=[PATH_TO_LOG_DIR]
-# Init shared memory of gpu nodes
-python src/init_shm.py              
+export LOG_PATH=[PATH_TO_LOG_DIR]           
 # Start storage server
 python src/start_storage_server.py  
 # Start HydraServe endpoint

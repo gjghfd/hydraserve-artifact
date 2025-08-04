@@ -27,6 +27,7 @@ log_path="/root/logs/expr_${expr}_${exec_type}_${model_set}_${backend}_${cv}_${r
 echo "Delete existing endpoints..."
 kubectl delete deployment --all
 ps aux | grep "python src/" | grep -v grep | awk '{print $2}' | xargs kill -9
+python $cur_dir/../scripts/kubernetes/vllm/src/clear_shm.py     # clear shared memory created by local storage servers
 sleep 3
 echo "Existing endpoints deleted."
 
@@ -43,7 +44,7 @@ serverlessllm() {
         export EXPR_1_1=1
     else
         # Get model list
-        python src/request_generator.py trace/trace_${cv}.pkl $req_rate model_${cv}_${req_rate}.txt
+        python $cur_dir/../scripts/kubernetes/vllm/src/request_generator.py $cur_dir/../scripts/kubernetes/vllm/trace/trace_${cv}.pkl $req_rate model_${cv}_${req_rate}.txt
     fi
     cd $cur_dir/../scripts/kubernetes/serverlessllm
     BACKEND=$backend python src/init_servers.py > $log_path 2>&1 &
@@ -66,6 +67,9 @@ hydraserve_with_single_worker() {
 hydraserve() {
     cd $cur_dir/../scripts/kubernetes/vllm
     python src/start_storage_server.py
+    if [ "$expr" == "0" ]; then
+        export MAX_PP_SIZE=4
+    fi
     python src/main.py > $log_path 2>&1 &
     echo "Waiting for endpoint startup..."
     sleep 10

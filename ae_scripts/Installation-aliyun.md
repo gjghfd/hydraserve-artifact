@@ -78,16 +78,7 @@ vim ~/.kube/config
 3. Click **Advanced**, and configure the `policy` field of `cgpu` to 1.
 4. Deploy the suite.
 
-### 4. Configure Node Label
-   
-Log in to the master node, and label all GPU servers with the following command.
-```
-kubectl label [node_name] ack.node.gpu.schedule=cgpu --overwrite
-```
-
-If you are using ECS instances not listed in 2.2, please configure the specifications of instance types in `scripts/kubernetes/vllm/src/ECSInstance.py`.
-
-### 5. Initialize Master Environment
+### 4. Initialize Master Environment
 
 Log in to your master node and run the following commands.
 ```
@@ -95,6 +86,15 @@ Log in to your master node and run the following commands.
 cd hydraserve-artifact/scripts/kubernetes
 sh install_python.sh    # The kubernetes package version must be consistent with the version of your local kubernetes.
 sh tool-node-shell/setup.sh
+```
+### 5. Configure Node Label
+   
+If you are using ECS instances not listed in 2.2, please first configure the specifications of instance types in `scripts/kubernetes/vllm/src/ECSInstance.py`.
+
+Log in to the master node, and label all GPU servers with the following command.
+```
+cd hydraserve-artifact/scripts/kubernetes
+SHARE=1 python label_nodes.py
 ```
 
 ### 6. [Optional] Mount NAS to all instances

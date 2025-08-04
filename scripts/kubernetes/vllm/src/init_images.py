@@ -36,6 +36,7 @@ if __name__ == '__main__':
     # Initialize storage server
     print("Start to initialize images...")
 
+    gpu_node_list = get_node_list_gpu(core_api)
     node_list = get_node_list_gpu(core_api) + list(get_node_list_nogpu(core_api).keys())
 
     remote_servers = []
@@ -51,14 +52,14 @@ if __name__ == '__main__':
         index += 1
     
     index = 0
-    for node in node_list:
+    for node in gpu_node_list:
         name = "worker-" + str(index)
         create_deployment(apps_api, name, ImageList["vllm"], {}, node, nas_path)
         workers.append(name)
         index += 1
     
     index = 0
-    for node in node_list:
+    for node in gpu_node_list:
         name = "local-server-" + str(index)
         create_deployment(apps_api, name, ImageList["storage-local"], {}, node, nas_path)
         local_servers.append(name)

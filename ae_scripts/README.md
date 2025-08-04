@@ -47,7 +47,7 @@ After the experiments for all settings have completed, use `figure7.py` to gener
 
 ## Figure 9 (End-to-End Performance)
 
-NOTE: Due to time limits, you can just choose several settings out of all settings to run end-to-end experiment. The settings that you did not run will be replaced with results in our experiments. We suggest you to prioritize experiments under CV=8 and request rate=0.6 to successfully generate Figure 11 and Figure 13 in the paper.
+NOTE: Due to time limits, you can choose several settings out of all settings to run end-to-end experiment. The settings that you did not run will be replaced with results in our experiments. We suggest you to prioritize experiments under CV=8 and req_rate=0.6 to successfully generate Figure 11 and Figure 13 in the paper.
 
 For each execution type (`serverless_vllm, serverlessllm, hydraserve, hydraserve_with_cache`), each CV (`8,4,2`), and each request rate (`0.6, 0.7, 0.8`), first start the server by
 ```
