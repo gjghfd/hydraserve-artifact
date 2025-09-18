@@ -7,7 +7,7 @@ We provide built images listed as below.
 ```
 Modified vLLM: registry.us-east-1.aliyuncs.com/kubernetes-fc/modelscope-vllm:v1
 
-Model Downloader: registry.cn-shanghai.aliyuncs.com/kubernetes-fc/vllm-download:v1
+Model Downloader: chlou/vllm-download:v1
 
 Storage Server:
 - registry.us-east-1.aliyuncs.com/kubernetes-fc/vllm-storage-server:v1
@@ -64,12 +64,12 @@ Install the [Aliyun GPUShare Plugin](https://github.com/AliyunContainerService/g
    
 Label all GPU servers.
 ```
-kubectl label [node_name] gpushare=true --overwrite
+kubectl label node [node_name] gpushare=true --overwrite
 ```
 
 Label all servers with specifications.
 ```
-kubectl label [node_name] node.kubernetes.io/instance-type=[Instance Type] --overwrite
+kubectl label node [node_name] node.kubernetes.io/instance-type=[Instance Type] --overwrite
 ```
 Configure the specifications of instance types in scripts/kubernetes/vllm/src/ECSInstance.py.
 
@@ -83,13 +83,13 @@ export MODEL_DIR=[PATH_TO_MODEL_DIR]
 export MODELSCOPE_TOKEN=[MODELSCOPE_ACCESS_TOKEN]
 # If you are using a NAS shared by all servers, configure the USE_NAS environment variable to 1
 export USE_NAS=1
-python src/init_models.py           # download models from modelscope
+MODEL_SET=2 python src/init_models.py           # download models from modelscope
 python src/init_shm.py              # init shared memory of gpu nodes
 ```
 
-To download all models required in our cold-start latency experiment (Section 8.2 in the paper), run
+If you only need download models required in our end-to-end experiment (Section 8.3 in the paper), run
 ```
-MODEL_SET=2 python src/init_models.py
+MODEL_SET=3 python src/init_models.py
 ```
 
 If you have downloaded models on the current server, and want to broadcast it to all other servers, run

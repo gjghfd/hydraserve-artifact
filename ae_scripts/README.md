@@ -3,6 +3,8 @@
 This is the artifact for the paper "HydraServe: Minimizing Cold Start Latency for Serverless LLM Serving in Public Clouds".
 This guide provides instructions to reproduce the main results presented in the paper.
 
+[NOTE: end-to-end scripts have not been tested.]
+
 ## Environment Setup
 
 We have prepared the environment on Aliyun ACK cluster. Please refer to HotCRP to obtain the access credentials for the cluster.
@@ -20,7 +22,7 @@ To configure the GPU isolation strategy, you should change the labels of all GPU
 cd hydraserve-artifact/scripts/kubernetes
 SHARE=1 python label_nodes.py
 ```
-1. For ServerlessLLM, run
+2. For ServerlessLLM, run
 ```
 cd hydraserve-artifact/scripts/kubernetes
 SHARE=0 python label_nodes.py

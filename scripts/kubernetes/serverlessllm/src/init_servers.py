@@ -34,6 +34,7 @@ def get_ip_list(pod_list: List[str]):
 
 if __name__ == '__main__':
     expr_1_1 = True if int(os.getenv("EXPR_1_1", "0")) == 1 else False
+    download_model = True if int(os.getenv("DOWNLOAD_MODEL", "0")) == 1 else False
     print("Delete existing deployment...")
     os.system("kubectl delete deployment --all")
     time.sleep(1)
@@ -232,13 +233,14 @@ if __name__ == '__main__':
     cmd = "kubectl cp /root/hardware_config.json " + pod_name + ":/app/hardware_config.json"
     os.system(cmd)
 
-    # Wait for remote storage startup
-    print(f"Waiting for remote storage startup...")
-    req = -1
-    req_bytes = req.to_bytes(length=4, byteorder='little', signed=True)
-    for ip in server_ip_list:
-        # post request util success
-        asyncio.run(post_ayncio_request_util_succ(ip, 8888, req_bytes))
+    if not download_model:
+        # Wait for remote storage startup
+        print(f"Waiting for remote storage startup...")
+        req = -1
+        req_bytes = req.to_bytes(length=4, byteorder='little', signed=True)
+        for ip in server_ip_list:
+            # post request util success
+            asyncio.run(post_ayncio_request_util_succ(ip, 8888, req_bytes))
 
     # Run server
     cmd = "kubectl exec " + pod_name + " -- sh -c \"/opt/conda/bin/sllm-serve start --hardware-config /app/hardware_config.json\""

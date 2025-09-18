@@ -168,7 +168,7 @@ def partition(model_path: str, pp_size: int, save_partitioned_state_dict: int):
         # delete large files
         items = os.listdir(model_path)
         for item in items:
-            if item.endswith(".bin") or item.endswith(".pth") or item.endswith(".pt") or item.endswith(".gguf") or item.endswith(".safetensors") or item.endswith(".msgpack") or item.endswith(".h5"):
+            if item.endswith(".bin") or item.endswith(".pth") or item.endswith(".pt") or item.endswith(".gguf") or item.endswith(".safetensors") or item.endswith(".msgpack") or item.endswith(".h5") or item.endswith(".index.json"):
                 os.remove(model_path + "/" + item)
         # save state_dict as a single file
         state_dict = model.state_dict()
@@ -305,13 +305,20 @@ def download_model():
     # login first.
     HubApi().login(sdk_token)
     print(f"cache_dir = {cache_dir}")
+    if "Llama-3-8B" in model_id:
+        # LLM-Research/Meta-Llama-3-8B-Instruct only has safetensors format
+        ignore_patterns = ["*.pth"]
+    else:
+        ignore_patterns = ["*.safetensors", "*.pth", "*.pt", "*.msgpack", "*.h5", "*.safetensors.index.json"]
     if len(revision) > 0:
         model_dir = snapshot_download (model_id =model_id, 
-                           revision =revision,
-                           cache_dir = cache_dir)
+                           revision = revision,
+                           cache_dir = cache_dir,
+                           ignore_patterns = ignore_patterns)
     else:
         model_dir = snapshot_download (model_id =model_id, 
-                            cache_dir = cache_dir)
+                            cache_dir = cache_dir,
+                            ignore_patterns = ignore_patterns)
     model_dir = os.path.join(cache_dir, model_id.replace('.', '___'))
     print("download model success, execute partition...")
     for pp_size in range(1, max_pp_size + 1):

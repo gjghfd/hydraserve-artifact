@@ -21,7 +21,7 @@ sh setup.sh 0
 
 2. Label all GPU servers
 ```
-kubectl label [node_name] ack.node.gpu.schedule=default --overwrite
+kubectl label node [node_name] ack.node.gpu.schedule=default --overwrite
 ```
 
 ### 1.3 Fetch Images and Download Models
@@ -32,8 +32,8 @@ You should have a NAS that mounted to '/mnt' of all servers.
 python src/init_images.py           # init images
 yum install -y git-lfs
 export ACCESS_TOKEN=[MODELSCOPE_ACCESS_TOKEN]
-python src/download_models.py       # download models
-python src/init_servers.py          # start ServerlessLLM endpoint
+python src/download_models.py       # download models [Or you can use models downloaded by Hydraserve through copying them to `/mnt/sllm`]
+DOWNLOAD_MODEL=1 python src/init_servers.py          # start ServerlessLLM endpoint
 # In another terminal
 conda activate sllm
 export LLM_SERVER_URL=http://$(cat head_ip.txt):8343/
