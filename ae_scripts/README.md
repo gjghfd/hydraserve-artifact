@@ -43,7 +43,7 @@ Then, run the cold start experiment:
 sh ./coldstart.sh $exec_type $model_set $backend
 ```
 
-After the experiments for all settings have completed, use `figure7.py` to generate the figure `figs/figure7.pdf`.
+After the experiments for all settings have completed, run `python figure7.py` to generate the figure `figs/figure7.pdf`.
 
 ## Figure 9 (End-to-End Performance)
 
@@ -63,12 +63,12 @@ sh ./end2end.sh $exec_type $cv $req_rate
 ```
 The experiment will elapse an hour.
 
-After the experiments for your selected settings have been completed, use `figure9.py` to generate the figure `figs/figure9.pdf`.
+After the experiments for your selected settings have been completed, run `python figure9.py` to generate the figure `figs/figure9.pdf`.
 
 ## Figure 11 (Application Analysis)
 
-After obtaining all the results of the end-to-end experiment under CV=8 and req_rate=0.6, use `figure11.py` to generate the figure `figs/figure11.pdf`. 
+After obtaining all the results of the end-to-end experiment under CV=8 and req_rate=0.6, run `python figure11.py` to generate the figure `figs/figure11.pdf`. 
 
 ## Figure 13 (TPOT and Resource Usage Penalties)
 
-After obtaining all the results of the end-to-end experiment under CV=8 and req_rate=0.6, use `figure13.py` to generate the figures `figs/figure13-a.pdf` and `figs/figure13-b.pdf`. 
+After obtaining all the results of the end-to-end experiment under CV=8 and req_rate=0.6, run `python figure13.py` to generate the figures `figs/figure13-a.pdf` and `figs/figure13-b.pdf`. 

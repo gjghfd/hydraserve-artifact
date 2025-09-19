@@ -71,9 +71,8 @@ class ModelServerManager:
             remote_server_rank = -1
             for rank in range(num_servers):
                 if remote_servers_net[rank] >= node_net:
-                    remote_servers_net[rank] -= node_net
-                    remote_server_rank = rank
-                    break
+                    if remote_server_rank == -1 or remote_servers_net[rank] < remote_servers_net[remote_server_rank]:
+                        remote_server_rank = rank
             if remote_server_rank == -1:
                 # Try to find two instances
                 node_net_ = node_net // 2
@@ -95,6 +94,7 @@ class ModelServerManager:
                 else:
                     raise RuntimeError("No enough remote servers.")
             else:
+                remote_servers_net[remote_server_rank] -= node_net
                 env["REMOTE_SERVER_ADDR"] = self.server_ip_list[remote_server_rank]
                 env["NUM_REMOTE_SERVER"] = "1"
             node_mem = int(resource[3] * 0.9)
