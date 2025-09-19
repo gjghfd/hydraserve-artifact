@@ -267,6 +267,11 @@ ModelSet[3] = [
 
 model_list = ModelSet[model_set]
 
+if model_set != 3:
+    for additional_model in ModelSet[3]:
+        if additional_model not in model_list:
+            model_list.append(additional_model)
+
 # model_list = [
 #     "modelscope/Llama-2-7b-chat-ms",
 #     "modelscope/Llama-2-13b-chat-ms",
