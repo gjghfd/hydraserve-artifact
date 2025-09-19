@@ -10,7 +10,7 @@ if __name__ == '__main__':
     core_api = client.CoreV1Api()
     apps_api = client.AppsV1Api()
 
-    print("Start to initialize storage server...")
+    print("Start to initialize storage server... It may take several minutes.")
 
     model_server_manager = ModelServerManager(core_api, apps_api)
     asyncio.run(model_server_manager.init_storage_server())
