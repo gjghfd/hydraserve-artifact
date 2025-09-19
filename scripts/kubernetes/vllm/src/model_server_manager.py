@@ -10,6 +10,7 @@ from ImageInfo import ImageList
 nas_path = os.getenv("MODEL_DIR", "/mnt")
 max_num_clients = 8     # max number of clients that a remote server can serve
 model_set = int(os.getenv("MODEL_SET", "3"))
+select_largest = int(os.getenv("LARGEST", "0"))
 
 '''
 A ModelManager manages model servers
@@ -71,8 +72,13 @@ class ModelServerManager:
             remote_server_rank = -1
             for rank in range(num_servers):
                 if remote_servers_net[rank] >= node_net:
-                    if remote_server_rank == -1 or remote_servers_net[rank] < remote_servers_net[remote_server_rank]:
+                    if remote_server_rank == -1:
                         remote_server_rank = rank
+                    else:
+                        if select_largest and remote_servers_net[rank] > remote_servers_net[remote_server_rank]:
+                            remote_server_rank = rank
+                        elif not select_largest and remote_servers_net[rank] < remote_servers_net[remote_server_rank]:
+                            remote_server_rank = rank
             if remote_server_rank == -1:
                 # Try to find two instances
                 node_net_ = node_net // 2

@@ -12,6 +12,7 @@ from ModelInfo import ModelList
 
 nas_path = "/mnt"
 model_set = int(os.getenv("MODEL_SET", "3"))
+select_largest = int(os.getenv("LARGEST", "0"))
 config.load_kube_config()
 core_api = client.CoreV1Api()
 apps_api = client.AppsV1Api()
@@ -121,8 +122,13 @@ if __name__ == '__main__':
         remote_server_rank = -1
         for rank in range(num_servers):
             if network_limits[rank] >= node_net:
-                if remote_server_rank == -1 or network_limits[rank] < network_limits[remote_server_rank]:
+                if remote_server_rank == -1:
                     remote_server_rank = rank
+                else:
+                    if select_largest and network_limits[rank] > network_limits[remote_server_rank]:
+                        remote_server_rank = rank
+                    elif not select_largest and network_limits[rank] < network_limits[remote_server_rank]:
+                        remote_server_rank = rank
         if remote_server_rank == -1:
             # Try to find two instances
             node_net_ = node_net // 2

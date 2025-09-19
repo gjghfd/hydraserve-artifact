@@ -17,8 +17,10 @@ if [ "$expr" == "0" ]; then
     else
         used_machine_types="ecs.gn6e-c12g1.12xlarge"
     fi
+    export LARGEST=1
 else
     used_machine_types="ecs.gn7i-c32g1.32xlarge,ecs.gn6e-c12g1.12xlarge"
+    export LARGEST=0
 fi
 
 mkdir -p /root/logs
