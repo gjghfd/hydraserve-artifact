@@ -130,7 +130,7 @@ curl -X POST -H "Content-Type: application/json" -d "{\"id\": \"0\", \"model\": 
 
 2. Generate traces and run an end-to-end experiment
 ```
-[Follow the instructions in ./trace to generate the workload.]
+[Follow the instructions in `scripts/kubernetes/vllm/trace` to generate the workload.]
 
 # Use request generator
 cd scripts/kubernetes/vllm

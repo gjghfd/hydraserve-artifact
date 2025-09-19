@@ -27,7 +27,7 @@ log_path="/root/logs/expr_${expr}_${exec_type}_${model_set}_${backend}_${cv}_${r
 echo "Delete existing endpoints..."
 kubectl delete deployment --all
 ps aux | grep "python src/" | grep -v grep | awk '{print $2}' | xargs kill -9
-python $cur_dir/../scripts/kubernetes/vllm/src/clear_shm.py     # clear shared memory created by local storage servers
+python $cur_dir/../scripts/kubernetes/vllm/src/clear_shm.py > /dev/zero 2>&1     # clear shared memory created by local storage servers
 sleep 3
 echo "Existing endpoints deleted."
 

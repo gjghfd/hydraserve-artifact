@@ -43,7 +43,7 @@ ECS types used in our latency measurement experiments (testbed (i)).
 ```
 4 * ecs.gn7i-c32g1.8xlarge (1*A10)
 4 * ecs.gn6e-c12g1.12xlarge (4*V100)
-8 * ecs.c7a.16xlarge (16Gbps, As remote storage)
+2 * ecs.gn7i-c32g1.16xlarge (32Gbps, As remote storage)
 ```
 
 ECS types used in our end-to-end experiments (testbed (ii)).
@@ -51,7 +51,7 @@ ECS types used in our end-to-end experiments (testbed (ii)).
 ```
 2 * ecs.gn7i-c32g1.32xlarge (4*A10)
 4 * ecs.gn6e-c12g1.12xlarge (4*V100)
-12 * c7a.16xlarge (16Gbps, As remote storage)
+6 * ecs.gn7i-c32g1.16xlarge (32Gbps, As remote storage)
 ```
 
 #### 2.2 Add Instances into ACK Cluster
@@ -91,7 +91,13 @@ sh tool-node-shell/setup.sh
    
 If you are using ECS instances not listed in 2.2, please first configure the specifications of instance types in `scripts/kubernetes/vllm/src/ECSInstance.py`.
 
-Log in to the master node, and label all GPU servers with the following command.
+Log in to the master node.
+For GPU servers that you want to use a remote storage, run
+```
+kubectl label node [node_name] aliyun.accelerator/nvidia_name-
+```
+
+Next, label all computation servers with the following command.
 ```
 cd hydraserve-artifact/scripts/kubernetes
 SHARE=1 python label_nodes.py
