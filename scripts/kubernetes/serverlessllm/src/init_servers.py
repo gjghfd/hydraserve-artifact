@@ -121,9 +121,8 @@ if __name__ == '__main__':
         remote_server_rank = -1
         for rank in range(num_servers):
             if network_limits[rank] >= node_net:
-                remote_server_rank = rank
-                network_limits[rank] -= node_net
-                break
+                if remote_server_rank == -1 or network_limits[rank] < network_limits[remote_server_rank]:
+                    remote_server_rank = rank
         if remote_server_rank == -1:
             # Try to find two instances
             node_net_ = node_net // 2
@@ -145,6 +144,7 @@ if __name__ == '__main__':
             else:
                 raise RuntimeError("No enough network resource.")
         else:
+            network_limits[remote_server_rank] -= node_net
             env["STORAGE_IP"] = server_ip_list[remote_server_rank]
             env["NUM_STORAGE"] = "1"
         create_deployment(apps_api, name, "registry.us-east-1.aliyuncs.com/kubernetes-fc/sllm-serve-worker:v1", env, node, nas_path, gpu=node_num_gpu, mem=node_mem)
