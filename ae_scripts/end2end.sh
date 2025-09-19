@@ -43,12 +43,12 @@ wait $pid
 echo "Experiment done."
 
 echo "Analyze results."
-result_path = "${log_path}.res"
+result_path="${log_path}.res"
 
 if [ "$exec_type" == "serverless_vllm" ] || [ "$exec_type" == "hydraserve" ]; then
-    cost_result_path = "${result_path}.cost"
-    tpot_result_path = "${result_path}.tpot"
-    COST_LOG=$cost_result_path TPOT_LOG=$tpot_result_path python src/result_analyzer.py $log_path $main_path $trace/trace_${cv}.pkl $req_rate > $result_path
+    cost_result_path="${result_path}.cost"
+    tpot_result_path="${result_path}.tpot"
+    COST_LOG=$cost_result_path TPOT_LOG=$tpot_result_path python src/result_analyzer.py $log_path $main_path trace/trace_${cv}.pkl $req_rate > $result_path
 else
     python src/result_analyzer.py $log_path > $result_path
 fi

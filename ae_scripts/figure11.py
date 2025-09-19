@@ -38,7 +38,7 @@ def fig_app():
     all = []
     for exec_type in exec_types:
         result_app = []
-        log_path = f"/root/logs/result_expr_1_${exec_type}_8_0.6.log.res"
+        log_path = f"/root/logs/expr_1_{exec_type}_8_0.6.log.res"
         if not os.path.exists(log_path):
             print(f"Error: evaluation of exec_type = {exec_type}, cv = 8, req_rate = 0.6 not completed.")
             exit(1)

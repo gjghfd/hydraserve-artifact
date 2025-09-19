@@ -43,7 +43,7 @@ def fig_cv():
         for cv_idx, cv in enumerate(cvs):
             results_cv = []
             for req_idx, req_rate in enumerate(req):
-                log_path = f"/root/logs/result_expr_1_${exec_type}_${cv}_${req_rate}.log.res"
+                log_path = f"/root/logs/expr_1_{exec_type}_{cv}_{req_rate}.log.res"
                 if not os.path.exists(log_path):
                     print(f"Warning: evaluation of exec_type = {exec_type}, cv = {cv}, req_rate = {req_rate} not completed. Use data point from our original experiment.")
                     attainment = orig_data[exec_idx][cv_idx][req_idx]

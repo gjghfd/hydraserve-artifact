@@ -22,7 +22,7 @@ def fig_cost_detail():
     task_types = {}
     task_dict_naive = {}
     cost_dict_naive = []
-    with open("cost_" + serverless_vllm_path, "r") as f:
+    with open(serverless_vllm_path + ".cost", "r") as f:
         lines = f.readlines()
         for line in lines:
             res = line.split(',')
@@ -37,7 +37,7 @@ def fig_cost_detail():
     
     task_dict_nocache = {}
     cost_dict_nocache = []
-    with open("cost_" + hydraserve_path, "r") as f:
+    with open(hydraserve_path + ".cost", "r") as f:
         lines = f.readlines()
         for line in lines:
             res = line.split(',')
@@ -124,7 +124,7 @@ def fig_tpot_detail():
     task_types = {}
     task_dict_naive = {}
     cost_dict_naive = []
-    with open("tpot_" + serverless_vllm_path, "r") as f:
+    with open(serverless_vllm_path + ".tpot", "r") as f:
         lines = f.readlines()
         for line in lines:
             res = line.split(',')
@@ -139,7 +139,7 @@ def fig_tpot_detail():
     
     task_dict_nocache = {}
     cost_dict_nocache = []
-    with open("tpot_" + hydraserve_path, "r") as f:
+    with open(hydraserve_path + ".tpot", "r") as f:
         lines = f.readlines()
         for line in lines:
             res = line.split(',')
