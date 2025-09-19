@@ -281,6 +281,8 @@ def get_node_list_nogpu(core_api) -> Dict[str, int]:
                 net = 0
             else:
                 net = AliyunECSInstanceInfo[node_type]
+                if isinstance(net, tuple):
+                    net = net[2]
             labels[node_labels["kubernetes.io/hostname"]] = net
         elif used_machines and node_type not in used_machines and node_type in AliyunECSInstanceInfo:
             net = AliyunECSInstanceInfo[node_type][2]
