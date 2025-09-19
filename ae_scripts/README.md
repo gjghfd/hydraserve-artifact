@@ -12,15 +12,16 @@ To set up environment on your own servers, please refer to the installation sect
 Due to the budget limit, we can only provision the cluster for a short time slot. Thus, we only reproduce the main results in our paper (figure7,9,11,13).
 
 ### GPU Isolation Configuration
-HydraServe and ServerlessLLM require different GPU isolation strategies. Before switching from one system to the other for experiments, please make sure to change the GPU isolation strategy accordingly (Serverless vLLM uses the same strategy as HydraServe).
-To configure the GPU isolation strategy, you should change the labels of all GPU servers:
+HydraServe and ServerlessLLM require different GPU isolation strategies to function correctly. It is crucial to switch the configuration before running experiments for each system. Note that Serverless vLLM uses the same isolation strategy as HydraServe.
 
-1. Before you conduct experiments for HydraServe, run
+To ensure the correct GPU isolation strategy is applied, please execute the appropriate script by changing the labels on all GPU servers as follows:
+
+1. Before conducting experiments for HydraServe (or Serverless vLLM):
 ```
 cd hydraserve-artifact/scripts/kubernetes
 SHARE=1 python label_nodes.py
 ```
-2. Before you conduct experiments for ServerlessLLM, run
+2. Before conducting experiments for ServerlessLLM:
 ```
 cd hydraserve-artifact/scripts/kubernetes
 SHARE=0 python label_nodes.py
