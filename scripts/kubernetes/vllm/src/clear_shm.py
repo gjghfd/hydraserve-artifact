@@ -3,7 +3,7 @@ from kubernetes import client, config
 from utils import get_node_list_nogpu, get_node_list_gpu
 
 async def clear_shared_memory(node):
-    command = f"kubectl node-shell {node} -- rm -rf /dev/shm/psm_*"
+    command = f"kubectl node-shell {node} -- find /dev/shm -maxdepth 1 -name '*psm*' -delete"
     process = await asyncio.create_subprocess_shell(
         command,
         stdout=asyncio.subprocess.PIPE,
