@@ -14,7 +14,7 @@ model_sets = ["0", "1"]
 backends = ["a10", "v100"]
 
 # Calculate the total number of experiments
-total_experiments = (len(execution_types) * len(model_sets) - 1) * len(backends)
+total_experiments = len(execution_types) * (len(model_sets) * len(backends) - 1)
 current_experiment = 0
 
 # Main loop to run experiments for each combination of parameters
