@@ -31,7 +31,13 @@ SHARE=0 python label_nodes.py
 
 As the remote storage cannot concurrently supply too many models, we have split the models into two sets and will run the experiments twice.
 
-For each execution type (`serverless_vllm, serverlessllm, serverlessllm_with_cached_model, hydraserve_with_single_worker, hydraserve`), each model set (`0, 1`), and each backend (`a10, v100`), first start the server by
+You can use run_figure7_expr.py to run the whole cold start experiment and generate the figure.
+```
+cd ae_scripts
+python run_figure7_expr.py
+```
+
+To manually run each experiment, for each execution type (`serverless_vllm, serverlessllm, serverlessllm_with_cached_model, hydraserve_with_single_worker, hydraserve`), each model set (`0, 1`), and each backend (`a10, v100`), first start the server by
 ```
 export exec_type=[execution_type]
 export model_set=[model_set]
